@@ -2,9 +2,21 @@ LANGUAGES = {
     'ru': 'Русский🇷🇺',
     'en': 'English🇺🇸',
     'fr': 'Français🇫🇷',
-    'de': 'Deutsch🇩🇪',
-    'es': 'Español🇪🇸',
+    # 'de': 'Deutsch🇩🇪',
+    # 'es': 'Español🇪🇸',
 }
+
+ADMIN_FORM_LABELS = { # Метки для анкеты, которая придет админу
+            'new_submission': 'Новая заявка на вступление в НСО!',
+            'fio': 'ФИО',
+            'faculty': 'Факультет',
+            'course_level': 'Уровень образования',
+            'course_number': 'Курс',
+            'experience': 'Предыдущий опыт/интересы',
+            'interests': 'Чем хочет заниматься сейчас',
+            'user_lang': 'Язык пользователя',
+            'user_id': 'ID пользователя'
+        }
 
 # Структура: TEXTS[язык][ключ]
 TEXTS = {
@@ -17,7 +29,8 @@ TEXTS = {
                                               'ID: {user_id}\n'
                                               'Имя: {username}\n\n'
                                               'Анкета:\n{application_data}',
-        'application_created': 'Рады знакомству! Вы можете ознакомиться с нашими возможностями по кнопкам ниже',
+        'application_created': 
+        'Спасибо! Рады знакомству! Для окончательной регистрации выберите, кем бы вы хотели быть: участником или организатором. Пока выбираете, вы можете ознакомиться с нашими возможностями!',
         
         # --- Тексты для анкеты (FSM) ---
         'registration_prompt_fio': '👋 Давайте познакомимся! Пожалуйста, введите ваше ФИО:',
@@ -85,7 +98,7 @@ TEXTS = {
         'join_nso_button': 'Join NSO',
         'error_message': 'An error occurred. Please try again later.',
         'welcome_message': 'Hello, this is the RUDN GreenLab NSO bot! Shall we get started?',
-        'application_created': '✅ Your application has been created. Thank you for your interest!',
+        'application_created': 'Thank you! Nice to meet you! To complete your registration, please choose whether you’d like to be a participant or an organiser. While you’re deciding, why not take a look at what we have to offer!',
         
         # --- Registration Texts (FSM) ---
         'registration_prompt_fio': "Let's get acquainted! Please enter your Full Name:",
@@ -155,7 +168,7 @@ TEXTS = {
     'join_nso_button': 'Adhérer à la NSO',
     'error_message': "Une erreur s'est produite. Veuillez réessayer plus tard.",
     'welcome_message': 'Bonjour, ici le bot NSO de Greenlab RUDN ! On commence?',
-    'application_created': "Votre candidature a été enregistrée. Merci de l'intérêt que vous nous portez !",
+    'application_created': "Merci ! Ravis de faire votre connaissance ! Pour finaliser votre inscription, choisissez le rôle que vous souhaitez endosser : participant ou organisateur. En attendant, vous pouvez découvrir toutes nos fonctionnalités!",
     
     # --- заполнение анкеты (FSM) ---
     'registration_prompt_fio': "Faisons connaissance ! Veuillez saisir votre nom complet:",

@@ -40,14 +40,21 @@ async def select_language(callback: types.CallbackQuery, state: FSMContext, bot:
     # Передаем язык в функцию создания клавиатуры (она должна его принимать)
     reply_markup = get_join_nso_keyboard(selected_lang) # Убираем инлайн-кнопки выбора языка
 
+    if callback.message:
+        await callback.message.delete()
     # 4. Редактируем старое сообщение или отправляем новое
     if callback.message:
         await callback.message.answer(
         text=welcome_text,
         reply_markup=reply_markup
     )
+    await state.set_state(None) 
     # Убираем часики на кнопке
     await callback.answer()
+
+
+
+
     
 
 

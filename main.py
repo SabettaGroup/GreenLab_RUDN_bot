@@ -2,10 +2,10 @@ import sys
 import asyncio
 import logging
 from config import settings
-from aiogram import Bot, Dispatcher
 from handlers.common import router
+from aiogram import Bot, Dispatcher
+from handlers.registration import router_reg
 from aiogram.fsm.storage.memory import MemoryStorage
-#from handlers import common
 
 # Специальный фикс для Windows, чтобы не было ошибки таймаута семафора
 if sys.platform == 'win32':
@@ -19,6 +19,7 @@ async def main():
     storage = MemoryStorage()
     dp = Dispatcher(storage=storage)
     dp.include_router(router)
+    dp.include_router(router_reg)
     logging.info("Starting bot...")
     await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
 

@@ -1,9 +1,15 @@
+import sys
 import asyncio
 import logging
 from config import settings
 from aiogram import Bot, Dispatcher
+from handlers.common import router
 from aiogram.fsm.storage.memory import MemoryStorage
 #from handlers import common
+
+# Специальный фикс для Windows, чтобы не было ошибки таймаута семафора
+if sys.platform == 'win32':
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 logging.basicConfig(level=logging.INFO)
 
@@ -12,7 +18,7 @@ async def main():
     bot = Bot(token=settings.bot_token.get_secret_value())
     storage = MemoryStorage()
     dp = Dispatcher(storage=storage)
-    # TODO: Зарегистрировать роутеры хендлеров
+    dp.include_router(router)
     logging.info("Starting bot...")
     await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
 

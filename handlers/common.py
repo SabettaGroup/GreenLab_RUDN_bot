@@ -26,30 +26,49 @@ async def cmd_start(message: types.Message, state: FSMContext, bot: Bot):
         reply_markup=get_language_keyboard() # Инлайн-клава с языками
     )
 
-@router.callback_query(LanguageState.waiting_for_language, F.data.in_(['ru', 'en', 'fr']))
+@router.callback_query(LanguageState.waiting_for_language)
 async def select_language(callback: types.CallbackQuery, state: FSMContext, bot: Bot):
-    """
-    Обрабатывает выбор языка пользователем.
-    Сохраняет язык в FSM, отправляет приветствие и Reply-клавиатуру.
-    """
-    selected_lang = callback.data # Получаем код языка ('ru', 'en', 'fr') из callback_data
-    
-    # Сохраняем выбранный язык в FSM контекст пользователя
+    # 1. Получаем код языка из callback_data (например, 'ru' или 'en')
+    selected_lang = callback.data 
+    # Проверяем, что такой язык вообще есть в нашем словаре (на всякий случай)
+    if selected_lang not in TEXTS:
+        selected_lang = 'ru' # Дефолт, если что-то пошло не так
+    # 2. Сохраняем выбор в FSM. Это позволит другим хендлерам узнать язык пользователя.
     await state.update_data(language=selected_lang)
-    
-    # Получаем тексты на выбранном языке
-    welcome_message_text = TEXTS[selected_lang]['welcome_message'] # Текст "Здравствуйте! ..."
-    join_nso_keyboard_markup = get_join_nso_keyboard(selected_lang) # Reply-клавиатура с кнопкой "Вступить в НСО"
+    # 3. Теперь достаем тексты.selected_lang тут уже определена и не будет красной.
+    welcome_text = TEXTS[selected_lang]['welcome_message']
+    # Передаем язык в функцию создания клавиатуры (она должна его принимать)
+    reply_markup = get_join_nso_keyboard(selected_lang) # Убираем инлайн-кнопки выбора языка
 
-    # Редактируем предыдущее сообщение (с выбором языка)
-    # Отправляем НОВОЕ сообщение с приветствием и Reply-клавиатурой
-    await callback.message.answer(
-        welcome_message_text,
-        reply_markup=join_nso_keyboard_markup # Теперь это Reply-клавиатура!
+    # 4. Редактируем старое сообщение или отправляем новое
+    if callback.message:
+        await callback.message.answer(
+        text=welcome_text,
+        reply_markup=reply_markup
     )
+    # Убираем часики на кнопке
+    await callback.answer()
     
-    # Завершаем состояние выбора языка
-    await state.clear() 
 
-    # Отвечаем на callback_query, чтобы убрать индикатор загрузки на кнопке
-    await callback.answer(text=TEXTS[selected_lang]['language_selected_notification'])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

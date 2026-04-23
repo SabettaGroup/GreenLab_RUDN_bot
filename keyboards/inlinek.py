@@ -45,3 +45,33 @@ def get_course_number_keyboard(lang: str) -> InlineKeyboardBuilder:
             
     builder.adjust(3) # Располагаем кнопки в 3 столбца (по 2 в каждом ряду)
     return builder
+
+def get_departments_keyboard(lang: str):
+    builder = InlineKeyboardBuilder()
+    depts = TEXTS[lang]['keyboard_departments']
+    
+    for key, name in depts.items():
+        builder.add(InlineKeyboardButton(text=name, callback_data=f"dept_{key}"))
+    
+    builder.adjust(2) # По 2 кнопки в ряд
+    return builder.as_markup()
+
+def get_dept_action_keyboard(lang: str, dept_key: str):
+    builder = InlineKeyboardBuilder()
+    btns = TEXTS[lang]['dept_actions'] # Нужно добавить в text.py
+    
+    builder.add(InlineKeyboardButton(text=btns['select'], callback_data=f"confirm_dept_{dept_key}"))
+    builder.add(InlineKeyboardButton(text=btns['back'], callback_data="back_to_depts"))
+    
+    builder.adjust(1)
+    return builder.as_markup()
+
+def get_organizer_keyboard(lang: str):
+    builder = InlineKeyboardBuilder()
+    btns = TEXTS[lang]['org_actions']
+    
+    builder.add(InlineKeyboardButton(text=btns['become'], callback_data="confirm_org"))
+    builder.add(InlineKeyboardButton(text=btns['back'], callback_data="back_to_main"))
+    
+    builder.adjust(1)
+    return builder.as_markup()

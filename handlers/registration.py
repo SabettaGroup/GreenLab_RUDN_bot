@@ -7,6 +7,7 @@ from aiogram.fsm.context import FSMContext
 from Fsm.registration import RegistrationState
 
 from keyboards.replyk import get_final_keyboard
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from keyboards.inlinek import get_course_level_keyboard, get_course_number_keyboard
 
 router_reg = Router() #роутер для регистрации
@@ -79,59 +80,68 @@ async def process_experience(message: types.Message, state: FSMContext):
     await message.answer(TEXTS[lang]['registration_prompt_interests'])
     await state.set_state(RegistrationState.interests)
 
-# 7. Финальный шаг: ловим интересы, собираем все данные и отправляем админу
+# 6. Ловим интересы -> Спрашиваем КОНТАКТЫ 
 @router_reg.message(RegistrationState.interests)
-async def process_interests_and_finish(message: types.Message, state: FSMContext, bot: Bot):
-    await state.update_data(interests=message.text) # Сохраняем интересы
-    full_user_data = await state.get_data() # Получаем ВСЕ накопленные данные
-    lang = full_user_data.get('language', 'ru')
-
-# ФИНАЛЬНЫЙ ХЕНДЛЕР 
-@router_reg.message(RegistrationState.interests)
-async def process_interests_and_finish(message: types.Message, state: FSMContext, bot: Bot):
+async def process_interests(message: types.Message, state: FSMContext):
     await state.update_data(interests=message.text)
+    data = await state.get_data()
+    lang = data.get('language', 'ru')
+    # Теперь спрашиваем контакты
+    await message.answer(TEXTS[lang]['registration_prompt_contacts'])
+    await state.set_state(RegistrationState.contacts)
+
+# 7. ФИНАЛЬНЫЙ ШАГ: ловим контакты, собираем всё и отправляем админу
+@router_reg.message(RegistrationState.contacts)
+async def process_contacts_and_finish(message: types.Message, state: FSMContext, bot: Bot):
+    await state.update_data(contacts=message.text)
     full_user_data = await state.get_data()
     lang = full_user_data.get('language', 'ru')
-    # 1. Получаем ID пользователя
     user_id = message.from_user.id
-    # 2. Получаем текущую дату и время (МСК или системное)
     now = datetime.now().strftime("%d.%m.%Y %H:%M")
-    
+
     # 3. анкета админа
     admin_message = (
-        f"📋 **НОВАЯ АНКЕТА ПОЛЬЗОВАТЕЛЯ**\n"
-        f"━━━━━━━━━━━━━━━━━━━━\n"
+        f"✅ **НОВАЯ АНКЕТА ПОЛЬЗОВАТЕЛЯ**\n\n"
         f"🆔 **ID:** `{user_id}`\n"
         f"📅 **Дата:** {now}\n"
         f"🌐 **Язык:** {lang.upper()}\n"
         f"━━━━━━━━━━━━━━━━━━━━\n"
-        f"👤 **ФИО:** {full_user_data.get('fio')}\n"
-        f"🎓 **Факультет:** {full_user_data.get('faculty')}\n"
-        f"📚 **Уровень:** {full_user_data.get('course_level')}\n"
-        f"🔢 **Курс:** {full_user_data.get('course_number')}\n"
-        f"💡 **Опыт:** {full_user_data.get('experience')}\n"
-        f"🚀 **Интересы:** {full_user_data.get('interests')}\n"
+        f"👤 **ФИО:** {full_user_data.get('fio', 'N/A')}\n"
+        f"🎓 **Факультет:** {full_user_data.get('faculty', 'N/A')}\n"
+        f"📚 **Уровень:** {full_user_data.get('course_level', 'N/A')}\n"
+        f"🔢 **Курс:** {full_user_data.get('course_number', 'N/A')}\n"
+        f"💡 **Опыт:** {full_user_data.get('experience', 'N/A')}\n"
+        f"🚀 **Интересы:** {full_user_data.get('interests', 'N/A')}\n"
+        f"📞 **КОНТАКТЫ:** {full_user_data.get('contacts', 'N/A')}\n"
     )
     
     # --- ОТПРАВКА АДМИНУ ---
     # Достаем ID из настроек
-    admin_chat_id = settings.admin_chat_id.get_secret_value() 
+    admin_chat_id = settings.admin_id 
     
     try:
         # Отправляем именно админу в чат
         await bot.send_message(
             chat_id=admin_chat_id, 
             text=admin_message, 
-            parse_mode="Markdown"
+            parse_mode="HTML"
         )
     except Exception as e:
         print(f"Ошибка отправки админу: {e}")
 
     # --- ОТВЕТ ПОЛЬЗОВАТЕЛЮ ---
+    from keyboards.replyk import get_final_keyboard
+    user_final_message = TEXTS[lang]['application_created'] 
+    final_keyboard = get_final_keyboard(lang)
     await message.answer(
-        text=TEXTS[lang]['registration_complete_message'],
-        reply_markup=get_final_keyboard(lang)
+        text=user_final_message,
+        reply_markup=final_keyboard
     )
-    
-    await state.clear()
-
+    # --- Завершаем анкету ---
+    # Ставим метку, что пользователь прошел регистрацию
+    # await state.update_data(is_registered=True) 
+    # await message.answer(
+    #     text=TEXTS[lang]['application_created'],
+    #     reply_markup=get_final_keyboard(lang)
+    # )
+    await state.set_state(None) # НЕ используем .clear(), чтобы флаг выжил!

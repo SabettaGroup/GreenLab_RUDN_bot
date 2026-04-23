@@ -41,7 +41,7 @@ async def admin_show_stats(message: types.Message, bot: Bot):
     response_text += f"📝 Количество заполненных анкет: [Будет из БД]\n"
     response_text += f"🤖 Бот активен: Да (uptime)\n"
     
-    await message.answer(response_text, parse_mode="Markdown")
+    await message.answer(response_text, parse_mode="HTML")
 
 # --- Другие админские команды по необходимости ---
 # Например, для перезагрузки бота (в будущем, не сейчас) или для отправки рассылки.

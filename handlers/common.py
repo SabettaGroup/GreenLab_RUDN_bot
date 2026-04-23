@@ -1,12 +1,14 @@
-from aiogram import Router, types, F, Bot
+from text import TEXTS
+from config import settings
+from datetime import datetime
+from Fsm.language import LanguageState
 from aiogram.filters import CommandStart
+from aiogram import Router, types, Bot, F
 from aiogram.fsm.context import FSMContext
-from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder # Импортируем для клавиатур
-
-from keyboards.inlinek import get_language_keyboard # Для кнопок языков импортируем соответ. инлайн-клаву 
-from keyboards.replyk import get_join_nso_keyboard # Для кнопки "Вступить в НСО"
-from Fsm.language import LanguageState # Наш FSM класс для языка
-from text import TEXTS # Наш словарь текстов
+from Fsm.becoming_member import MemberState
+from keyboards.replyk import get_join_nso_keyboard 
+from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder 
+from keyboards.inlinek import get_language_keyboard, get_departments_keyboard, get_organizer_keyboard, get_dept_action_keyboard
 
 # Создаем роутер для общих хендлеров
 router = Router()
@@ -52,9 +54,113 @@ async def select_language(callback: types.CallbackQuery, state: FSMContext, bot:
     # Убираем часики на кнопке
     await callback.answer()
 
+# --- ВЕТКА 4А: УЧАСТНИК ---
+@router.message(F.text.in_([
+    TEXTS['ru']['keyboard_reply_buttons']['become_a_member'],
+    TEXTS['en']['keyboard_reply_buttons']['become_a_member'],
+    TEXTS['fr']['keyboard_reply_buttons']['become_a_member']]))
+async def process_become_member(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+    lang = data.get('language', 'ru')
 
+    await message.answer(TEXTS[lang]['choose_dept_message'], reply_markup=get_departments_keyboard(lang))
+    await state.set_state(MemberState.choosing_department)
 
+@router.callback_query(MemberState.choosing_department, F.data.startswith("dept_"))
+async def show_dept_info(callback: types.CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    lang = data.get('language', 'ru')
+    dept_key = callback.data.split("_")[1]
+    
+    # Показываем описание отдела и кнопки "Выбрать" / "Назад"
+    await callback.message.edit_text(
+        text=TEXTS[lang][f'department_description_{dept_key}'],
+        reply_markup=get_dept_action_keyboard(lang, dept_key)
+    )
 
+@router.callback_query(MemberState.choosing_department, F.data == "back_to_depts")
+async def back_to_depts(callback: types.CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    lang = data.get('language', 'ru')
+    await callback.message.edit_text(TEXTS[lang]['choose_dept_message'], reply_markup=get_departments_keyboard(lang))
+
+# Кнопка "Выбрать отдел" (ФИНАЛ)
+@router.callback_query(MemberState.choosing_department, F.data.startswith("confirm_dept_"))
+async def confirm_dept(callback: types.CallbackQuery, state: FSMContext, bot: Bot):
+    data = await state.get_data()
+    lang = data.get('language', 'ru')
+    # ПРОВЕРКА
+    if data.get('already_sent_final_request'):
+        await callback.answer(TEXTS[lang]['already_applied'], show_alert=True) # Показываем уведомление
+        return
+    
+    dept_key = callback.data.split("_")[2]
+    dept_name = TEXTS[lang]['keyboard_departments'][dept_key]
+    # 1. Меняем текст пользователю
+    await callback.message.edit_text(TEXTS[lang]['thanks_dept'])
+    # 2. Уведомляем админа
+    now = datetime.now().strftime("%d.%m.%Y %H:%M")
+    user_data = await state.get_data() 
+    user_contacts = data.get('contacts', 'Не указаны')
+    admin_msg = (
+        f"🔔 **НОВАЯ ЗАЯВКА: УЧАСТНИК**\n"
+        f"🆔 ID: `{callback.from_user.id}`\n"
+        f"📅 Дата: {now}\n"
+        f"🏢 Отдел: {dept_name}\n"
+        f"Контакты: {user_contacts}"
+    )
+    await bot.send_message(settings.admin_id, admin_msg, parse_mode="HTML")
+    await state.update_data(already_sent_final_request=True)
+    await callback.message.edit_text(TEXTS[lang]['thanks_dept'])
+    await state.set_state(None)
+
+# --- ВЕТКА 4Б: ОРГАНИЗАТОР ---
+@router.message(F.text.in_([
+    TEXTS['ru']['keyboard_reply_buttons']['become_an_org'],
+    TEXTS['en']['keyboard_reply_buttons']['become_an_org'],
+    TEXTS['fr']['keyboard_reply_buttons']['become_an_org']]))
+async def process_become_org(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+    lang = data.get('language', 'ru')
+    # ПРОВЕРКА
+    if data.get('already_sent_final_request'):
+        await message.answer(TEXTS[lang]['already_applied'])
+        return
+    await message.answer(TEXTS[lang]['organizer_promo'], reply_markup=get_organizer_keyboard(lang))
+
+# Кнопка "Стать организатором"
+@router.callback_query(F.data == "confirm_org")
+async def confirm_org(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
+    data = await state.get_data()
+    lang = data.get('language', 'ru')
+    # проверка
+    if data.get('already_sent_final_request'):
+        await callback.answer(TEXTS[lang]['already_applied'], show_alert=True)
+        return
+    
+    await callback.message.edit_text(TEXTS[lang]['thanks_org'])
+    user_data = await state.get_data() 
+    user_contacts = data.get('contacts', 'Не указаны')
+    # Уведомляем админа
+    now = datetime.now().strftime("%d.%m.%Y %H:%M")
+    admin_msg = (
+        f"🔥 **НОВАЯ ЗАЯВКА: ОРГАНИЗАТОР**\n"
+        f"🆔 ID: `{callback.from_user.id}`\n"
+        f"📅 Дата: {now}\n"
+        f"Контакты: {user_contacts}"
+    )
+    await bot.send_message(settings.admin_id, admin_msg, parse_mode="HTML")
+    await state.update_data(already_sent_final_request=True)
+    await callback.message.edit_text(TEXTS[lang]['thanks_org'])
+    await state.set_state(None)
+
+# Кнопка "Назад" для организатора (к сообщению благодарности)
+@router.callback_query(F.data == "back_to_main")
+async def back_to_main(callback: types.CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    lang = data.get('language', 'ru')
+    # Просто удаляем инлайн-сообщение, так как реплай-клава и так на месте
+    await callback.message.delete()
     
 
 

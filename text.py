@@ -23,15 +23,16 @@ TEXTS = {
     'ru': {
         # --- Общие тексты ---
         'welcome_message_lang':'Выберите язык\nSelect a language',
-        'welcome_message': 'Здравствуйте, это бот НСО Гринлаба РУДН! Давайте начнем?',
+        'welcome_message': 'Здравствуйте, это бот НСО Гринлаба РУДН!🌱\n Давайте начнем?',
         'error_message': 'Произошла ошибка. Пожалуйста, попробуйте позже.',
         'admin_notification_new_application': '📝 Новая заявка от пользователя:\n'
                                               'ID: {user_id}\n'
                                               'Имя: {username}\n\n'
                                               'Анкета:\n{application_data}',
         'application_created': 
-        'Спасибо! Рады знакомству! Для окончательной регистрации выберите, кем бы вы хотели быть: участником или организатором. Пока выбираете, вы можете ознакомиться с нашими возможностями!',
+        'Спасибо! Рады знакомству! теперь вы - часть нашего комьюнити!🫂\n скоро с вами свяжется наш ответственный, чтобы согласовать действия, а пока можете ознакомиться с нашими возможностями!',
         'already_applied': "Вы уже подали заявку. Если хотите поменять выбор, свяжитесь с ответственным\n\n@sasha_erbaeva",
+        "too_many_registrations": "Вы уже заполнили анкету максимально возможное количество раз",
         # --- Тексты для анкеты (FSM) ---
         'registration_prompt_fio': '👋 Давайте познакомимся! Пожалуйста, введите ваше ФИО:',
         'registration_prompt_faculty': ' Укажите ваш факультет и направление:',
@@ -39,7 +40,7 @@ TEXTS = {
         'registration_prompt_course_number': 'Выберите ваш курс:',
         'registration_prompt_experience': 'Чем Вы занимались раньше? Расскажите о своём опыте и интересах.',
         'registration_prompt_interests': 'Чем бы вы хотели заниматься сейчас?',
-        'registration_prompt_contacts': "Оставьте, пожалуйста, ваши контактные данные (подойдет корпоративная почта, юзернейм в телеграме или любой другой):",
+        'registration_prompt_contacts': "📞Оставьте, пожалуйста, ваши контактные данные (подойдет корпоративная почта, юзернейм в телеграме или любой другой):",
         # 'registration_confirm_data': 'Вот данные, которые вы ввели. Всё верно?',
         # 'registration_data_sent_to_admin': 'Ваша анкета отправлена на рассмотрение!',
 
@@ -79,9 +80,9 @@ TEXTS = {
         "keyboard_reply_buttons": {
             'join_nso_button': 'Вступить в НСО',
             'become_a_member': 'стать участником',
-            'become_an_org': 'стать организатором',
+            'become_an_org': 'стать организатором👩‍⚕️',
             'events': 'мероприятия',
-            'waste_sorting': 'сортировка мусора'
+            'waste_sorting': 'сортировка мусора♻️'
         },
         'department_description_media': 'Медиа отдел занимается всем тем, что вы видите в социальных сетях, - посты с красивыми картинками и завлекающими текстами. Дизайн, фигма, охваты и всё, что связано с соц сетями, - это медийщики.',
         'department_description_relations': 'Отдел связи - это связывающее звено между студентами и НСО. Здесь важно быть общительным и уметь договариваться с самыми разными людьми 🤝',
@@ -96,16 +97,13 @@ TEXTS = {
         'become_participant_message': 'Вы можете ознакомиться с нашими возможностями!',
         'events_prompt': 'У нас есть различные мероприятия. Выберите, какое по душе:',
         'event_example': 'Название мероприятия 1\nОписание мероприятия 1\nОбратитесь к админу',
-        'sorting_prompt': 'Выберите корпус:',
-        'sorting_main_corpus': 'Главный корпус',
-        'sorting_ecology_corpus': 'Корпус Института Экологии',
-        'sorting_waste_info': {
-            'paper': 'Бумага: !',       # TODO
-            'bottles': 'Бутылки: !',    # TODO
-            # TODO:
+        
+        "wasting": {
+            "location_of_rubbish_bins": "В корпусе института экологии баки для мусора отсортированы по этажам и классам отходов, вот их расположение:\n\n 1 этаж: пластиковые бутылки, стекло, металл.\n\n2 этаж: бумага, стекло, металл, пластиковые бутылки и крышки, батарейки.\n\n3 этаж: стекло, бумага, пластиковые бутылки и крышки, батарейки\n\nЗона Буккроссинга: чеки, ручки.",
+            "how_to_handle": "Бумага:\n1) должна быть сухой\n2) очищаем от скотча, плёнки и скрепок\n3) отправляем в бак\nЧто не подходит:\n- Плотный многослойный картон \n- Тетра-пак\n- Фантики с алюминиевым покрытием\n- Чеки\n\nСтекло:\n1) Моем, сушим\n2) Убираем наклейки\n\nПластиковые бутылки PET:\n1) моем, сушим\n2) снимаем бумажные наклейки\n3) отправляем в бак\nУважаемые студенты, для данного бака не подходят вещи из трудноперерабатываемого пластика иных категорий.\n*PET - 1 категория пластика, в составе полиэтилентерефталат, самый распространенный термопластик.",
+            "how_to_handle_btn": "как обращаться с отходами?",
+            "back": "назад"
         },
-        'sorting_bin_location_main': 'Карта Главного корпуса',
-        'sorting_bin_location_ecology': 'Карта Корпуса Института Экологии',
 
         'placeholders': {
     'fio': "Иванов Иван Иванович",
@@ -120,9 +118,10 @@ TEXTS = {
         # --- General Texts ---
         'join_nso_button': 'Join NSO',
         'error_message': 'An error occurred. Please try again later.',
-        'welcome_message': 'Hello, this is the RUDN GreenLab NSO bot! Shall we get started?',
-        'application_created': 'Thank you! Nice to meet you! To complete your registration, please choose whether you’d like to be a participant or an organiser. While you’re deciding, why not take a look at what we have to offer!',
+        'welcome_message': 'Hello, this is the RUDN GreenLab NSO bot!🌱\n Shall we get started?',
+        'application_created': 'Thank you! It’s a pleasure to meet you! You’re now part of our community!🫂\n One of our representatives will be in touch shortly to discuss the next steps, but in the meantime, why not take a look at what we have to offer?',
         'already_applied': "ou have already submitted your application. If you wish to change your selection, please contact the person in charge\n\n@sasha_erbaeva",
+        'too_many_registrations': 'You have already submitted the form the maximum number of times allowed',
         # --- Registration Texts (FSM) ---
         'registration_prompt_fio': "Let's get acquainted! Please enter your Full Name:",
         'registration_prompt_faculty': 'Please specify your faculty and major:',
@@ -132,7 +131,7 @@ TEXTS = {
         'registration_prompt_interests': 'What would you like to do now?',
         # 'registration_confirm_data': 'Here is the data you entered. Is everything correct?',
         # 'registration_data_sent_to_admin': 'Your application has been sent for review!',
-        'registration_prompt_contacts': "Please provide your contact details (a work email address, Telegram username or any other details will do)",
+        'registration_prompt_contacts': "📞Please provide your contact details (a work email address, Telegram username or any other details will do)",
 
         'choose_dept_message': "Select the department you're interested in:",
         'dept_actions': {'select': "Select department", 'back': "Back"},
@@ -169,9 +168,9 @@ TEXTS = {
         'keyboard_reply_buttons': {
             'join_nso_button': 'Join the NSO',
             'become_a_member': 'Become a member',
-            'become_an_org': 'Become an organiser',
+            'become_an_org': 'Become an organiser👩‍⚕️',
             'events': 'Events',
-            'waste_sorting': 'Waste sorting'
+            'waste_sorting': 'Waste sorting♻️'
         },
 
         'department_description_media': 'The Media Department handles everything you see on social media – posts with attractive images and engaging text. Design, Figma, reach, and everything related to social media – that’s what the media team does.',
@@ -187,16 +186,13 @@ TEXTS = {
         'become_participant_message': 'become a member',
         'events_prompt': 'We have various events. Choose one you like:',
         'event_example': 'Event Name 1\nEvent Description 1\nContact the admin',
-        'sorting_prompt': 'Select the building:',
-        'sorting_main_corpus': 'Main Building',
-        'sorting_ecology_corpus': 'Ecology Institute Building',
-        'sorting_waste_info': {
-            'paper': 'Paper: recycle...',       # TODO:
-            'bottles': 'Bottles: recycle...',   # TODO:
-           # TODO:
+        
+        "wasting": {
+            "location_of_rubbish_bins": "In the Institute of Ecology building, the waste bins are sorted by floor and waste category; here is their layout:\n\n Ground floor: plastic bottles, glass, metal.\n\nFirst floor: paper, glass, metal, plastic bottles and caps, batteries.\ n\n3rd floor: glass, paper, plastic bottles and caps, batteries\n\nBookcrossing area: receipts, pens.",
+            "how_to_handle": "Paper:\n1) Must be dry\n2) Remove any tape, plastic film and paper clips\n3) Place in the bin\nWhat is not accepted:\n- Thick, multi-layered cardboard\n- Tetra Pak cartons\n- Aluminium-coated sweet wrappers\n - Receipts\n\nGlass:\n1) Wash and dry\n2) Remove labels\n\nPET plastic bottles:\n1) Wash and dry\n2) Remove paper labels\n3) Place in the bin\ nDear students, items made of hard-to-recycle plastics from other categories are not suitable for this bin.\n*PET – Category 1 plastic, composed of polyethylene terephthalate, the most common thermoplastic.",
+            "how_to_handle_btn": "How should waste be managed?",
+            "back": "back"
         },
-        'sorting_bin_location_main': 'Main Building Map', 
-        'sorting_bin_location_ecology': 'Ecology Institute Building Map',
 
         'placeholders': {
     'fio': "Margaret Thatcher",
@@ -211,9 +207,10 @@ TEXTS = {
     # ---основной ---
     'join_nso_button': 'Adhérer à la NSO',
     'error_message': "Une erreur s'est produite. Veuillez réessayer plus tard.",
-    'welcome_message': 'Bonjour, ici le bot NSO de Greenlab RUDN ! On commence?',
-    'application_created': "Merci ! Ravis de faire votre connaissance ! Pour finaliser votre inscription, choisissez le rôle que vous souhaitez endosser : participant ou organisateur. En attendant, vous pouvez découvrir toutes nos fonctionnalités!",
+    'welcome_message': 'Bonjour, ici le bot NSO de Greenlab RUDN!🌱\n On commence?',
+    'application_created': "Merci! Ravis de faire votre connaissance! Vous faites désormais partie de notre communauté!🫂\n Notre responsable vous contactera prochainement pour coordonner nos actions. En attendant, n'hésitez pas à découvrir nos services!",
     'already_applied' : "Vous avez déjà déposé votre candidature. Si vous souhaitez modifier votre choix, veuillez contacter le responsable\n\n@sasha_erbaeva",
+    "too_many_registrations" : "Vous avez déjà rempli le formulaire autant de fois que possible",
     # --- заполнение анкеты (FSM) ---
     'registration_prompt_fio': "Faisons connaissance ! Veuillez saisir votre nom complet:",
     'registration_prompt_faculty': "Veuillez indiquer votre faculté et votre filière:",
@@ -223,7 +220,7 @@ TEXTS = {
     'registration_prompt_interests': "Qu'est-ce que tu aimerais faire maintenant?",
     'registration_confirm_data': "Voici les données que vous avez saisies. Tout est correct?",
     'registration_data_sent_to_admin': "Ta candidature a été transmise pour examen!",
-    'registration_prompt_contacts': "Veuillez nous communiquer vos coordonnées (adresse e-mail professionnelle, identifiant Telegram ou tout autre moyen de contact)",
+    'registration_prompt_contacts': "📞Veuillez nous communiquer vos coordonnées (adresse e-mail professionnelle, identifiant Telegram ou tout autre moyen de contact)",
     
     'choose_dept_message': "Sélectionnez le service qui vous intéresse:",
     'dept_actions': {'select': "Sélectionner un service", 'back': "back"},
@@ -261,9 +258,9 @@ TEXTS = {
     "keyboard_reply_buttons" : {
     'join_nso_button': "Rejoindre l'NSO",
     "become_a_member": "Devenir membre",
-    "become_an_org": "Devenir organisateur",
+    "become_an_org": "Devenir organisateur👩‍⚕️",
     "events": "Événements",
-    "waste_sorting": "Tri des déchets"
+    "waste_sorting": "Tri des déchets♻️"
     },
 
     'department_description_media': "Le service médias s'occupe de tout ce que vous voyez sur les réseaux sociaux : les publications avec de belles images et des textes accrocheurs. Design, Figma, portée et tout ce qui touche aux réseaux sociaux : c'est le domaine des spécialistes des médias.",
@@ -279,16 +276,13 @@ TEXTS = {
     'become_participant_message': 'Devenir membre',
     'events_prompt': 'Nous proposons divers événements. Choisissez celui qui vous plaît :',
     'event_example': 'Event Name 1\nEvent Description 1\nContact the admin',
-    'sorting_prompt': 'Sélectionnez le bâtiment:',
-    'sorting_main_corpus': 'Bâtiment principal',
-    'sorting_ecology_corpus': "Bâtiment de l'Institut d'écologie",
-    'sorting_waste_info': {
-        'paper': '!',       # TODO:
-        'bottles': '!',     # TODO:
-        # TODO:...
-    },
-    'sorting_bin_location_main': 'Plan du bâtiment principal',
-    'sorting_bin_location_ecology': "Plan du bâtiment de l'Institut d'écologie",
+    
+    "wasting": {
+            "location_of_rubbish_bins": "Dans le bâtiment de l'Institut d'écologie, les poubelles sont réparties par étage et par type de déchets. Voici leur emplacement :\n\n 1er étage : bouteilles en plastique, verre, métal.\n\n2e étage : papier, verre, métal, bouteilles et bouchons en plastique, piles.\ n\n3e étage : verre, papier, bouteilles en plastique et bouchons, piles\n\nZone de bookcrossing : tickets de caisse, stylos.",
+            "how_to_handle": "Papier :\n1) doit être sec\n2) retirer le ruban adhésif, les films plastiques et les trombones\n3) mettre dans le conteneur\nCe qui n'est pas accepté :\n- Carton épais multicouche\n- Tetra Pak\n- Emballages en aluminium\n - Tickets de caisse\n\nVerre :\n1) Laver, sécher\n2) Retirer les autocollants\n\nBouteilles en plastique PET :\n1) Laver, sécher\n2) Retirer les autocollants en papier\n3) Déposer dans le conteneur\ Chers étudiants, les objets en plastique difficile à recycler appartenant à d'autres catégories ne sont pas adaptés à ce conteneur.\n*PET - plastique de catégorie 1, composé de polyéthylène téréphtalate, le thermoplastique le plus répandu.",
+            "how_to_handle_btn": "Comment gérer les déchets ?",
+            "back": "revenir"
+        },
 
     'placeholders': {
     'fio': "Jean-Jacques",

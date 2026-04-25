@@ -1,14 +1,15 @@
 from text import TEXTS
 from config import settings
 from datetime import datetime
+from DataBase.users import get_reg_count
 from aiogram import Router, types, Bot, F
-
 from aiogram.fsm.context import FSMContext
+from DataBase.users import increment_reg_count
 from Fsm.registration import RegistrationState
-
 from keyboards.replyk import get_final_keyboard
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from keyboards.inlinek import get_course_level_keyboard, get_course_number_keyboard
+
 
 router_reg = Router() #роутер для регистрации
 
@@ -18,8 +19,16 @@ router_reg = Router() #роутер для регистрации
     TEXTS['fr']['keyboard_reply_buttons']['join_nso_button'],
 ])) # 1. Начинаем
 async def start_survey(message: types.Message, state: FSMContext):
+    # проверка на кол-во регистраций
     data = await state.get_data()
-    lang = data.get('language', 'ru') # Дефолт - русский
+    lang = data.get('language', 'ru')
+    user_id = message.from_user.id
+    count = get_reg_count(user_id)
+    if count >= 2:
+        await message.answer(TEXTS[lang]['too_many_registrations'])
+        return
+
+    # Если всё ок, начинаем опрос
     await message.answer(TEXTS[lang]['registration_prompt_fio'])
     await state.set_state(RegistrationState.fio)
 
@@ -51,7 +60,7 @@ async def process_course_level(callback: types.CallbackQuery, state: FSMContext)
     lang = data.get('language', 'ru')
     level_key = callback.data.split("_")[1] # Извлекаем 'bachelor', 'master' или 'phd'
     await state.update_data(course_level=TEXTS[lang]['keyboard_levels'][level_key]) # Сохраняем уровень образования (текстом)
-    await callback.message.edit_reply_markup(reply_markup=None) # Убираем кнопки у старого сообщения
+    await callback.message.delete() # не засоряем чат - удаляем сообщение
     await callback.message.answer(
         TEXTS[lang]['registration_prompt_course_number'],
         reply_markup=get_course_number_keyboard(lang).as_markup()
@@ -66,7 +75,7 @@ async def process_course_number(callback: types.CallbackQuery, state: FSMContext
     lang = data.get('language', 'ru')
     course_num = callback.data.split("_")[1] # Извлекаем '1', '2', '3' и т.д.
     await state.update_data(course_number=TEXTS[lang]['keyboard_courses'][course_num]) # Сохраняем номер курса (текстом)
-    await callback.message.edit_reply_markup(reply_markup=None)
+    await callback.message.delete()
     await callback.message.answer(TEXTS[lang]['registration_prompt_experience'])
     await state.set_state(RegistrationState.experience)
     await callback.answer()
@@ -137,6 +146,8 @@ async def process_contacts_and_finish(message: types.Message, state: FSMContext,
         text=user_final_message,
         reply_markup=final_keyboard
     )
+    # УВЕЛИЧИВАЕМ СЧЕТЧИК В БАЗЕ
+    increment_reg_count(message.from_user.id)
     # --- Завершаем анкету ---
     # Ставим метку, что пользователь прошел регистрацию
     # await state.update_data(is_registered=True) 

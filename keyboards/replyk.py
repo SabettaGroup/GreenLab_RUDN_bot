@@ -1,6 +1,7 @@
-from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
-from aiogram.utils.keyboard import ReplyKeyboardBuilder
 from text import TEXTS
+from aiogram.utils.keyboard import ReplyKeyboardBuilder
+from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
+
 
 def get_join_nso_keyboard(lang: str):
     """
@@ -20,8 +21,8 @@ def get_final_keyboard(lang: str) -> ReplyKeyboardMarkup:
     
     keyboard = ReplyKeyboardMarkup(
         keyboard=[
-            [KeyboardButton(text=buttons['become_a_member']), KeyboardButton(text=buttons['become_an_org'])],
-            [KeyboardButton(text=buttons['events']), KeyboardButton(text=buttons['waste_sorting'])]
+            [KeyboardButton(text=buttons['become_an_org'])],
+            [KeyboardButton(text=buttons['waste_sorting'])]
         ],
         resize_keyboard=True,
         one_time_keyboard=False # Клавиатура остается после использования

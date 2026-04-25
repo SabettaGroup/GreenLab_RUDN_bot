@@ -3,7 +3,10 @@ import asyncio
 import logging
 from config import settings
 from handlers.common import router
+from DataBase.users import init_db
 from aiogram import Bot, Dispatcher
+from handlers.admin import admin_router
+from handlers.sorting import router_sort
 from handlers.registration import router_reg
 from aiogram.fsm.storage.memory import MemoryStorage
 
@@ -14,14 +17,16 @@ if sys.platform == 'win32':
 logging.basicConfig(level=logging.INFO)
 
 async def main():
-    # Используем .get_secret_value() для извлечения токена из SecretStr
-    bot = Bot(token=settings.bot_token.get_secret_value())
+    init_db() # запускаем БД
+    bot = Bot(token=settings.bot_token.get_secret_value()) 
     storage = MemoryStorage()
     dp = Dispatcher(storage=storage)
     dp.include_router(router)
     dp.include_router(router_reg)
+    dp.include_router(admin_router)
+    dp.include_router(router_sort)
     logging.info("Starting bot...")
-    await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
+    await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types(), dp=dp)
 
 if __name__ == "__main__":
     try:

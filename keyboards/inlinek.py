@@ -1,6 +1,7 @@
 from text import LANGUAGES, TEXTS
-from aiogram.types import InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+
 
 def get_language_keyboard() -> InlineKeyboardBuilder:
     """Создает инлайн-клавиатуру для выбора языка, беря варианты из LANGUAGES"""
@@ -75,3 +76,19 @@ def get_organizer_keyboard(lang: str):
     
     builder.adjust(1)
     return builder.as_markup()
+
+def get_waste_main_kb(lang: str) -> InlineKeyboardMarkup:
+    w_text = TEXTS[lang]['wasting']
+    kb = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=w_text['how_to_handle_btn'], callback_data="show_rules")],
+        [InlineKeyboardButton(text=w_text['back'], callback_data="back_to_main_menu")]
+    ])
+    return kb
+
+def get_waste_rules_kb(lang: str) -> InlineKeyboardMarkup:
+    # Тянем перевод кнопки "назад"
+    w_text = TEXTS[lang]['wasting']
+    kb = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=w_text['back'], callback_data="back_to_plan")]
+    ])
+    return kb
